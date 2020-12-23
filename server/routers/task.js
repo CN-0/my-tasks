@@ -18,4 +18,15 @@ router.post("/add", auth, (req, res) => {
     });
 });
 
+router.patch("/change-status", auth, async (req, res) => {
+  try {
+    const task = await Task.findById(req.body.task.id);
+    task.status = req.body.task.status;
+    await task.save();
+    res.status(200).json({ task });
+  } catch (e) {
+    res.status(400).json({ msg: e.message });
+  }
+});
+
 module.exports = router;

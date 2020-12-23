@@ -5,4 +5,5 @@ export {
   authCheckState,
   changeError,
   createTask,
+  changeStatus,
 } from "./auth";

@@ -99,9 +99,39 @@ export const createTask = (token, taskData, tasks) => {
       }
     )
       .then((res) => {
+        const mytasks = localStorage.getItem("mytasks");
+        let newData = JSON.parse(mytasks);
+        newData.user.tasks = [...tasks, res.data.task];
+        localStorage.setItem("mytasks", JSON.stringify(newData));
         dispatch({
           type: actionTypes.ADD_TASK,
           tasks: [...tasks, res.data.task],
+        });
+      })
+      .catch((err) => {
+        dispatch(authFail(err.response.data.msg));
+      });
+  };
+};
+
+export const changeStatus = (token, data, tasks) => {
+  return (dispatch) => {
+    dispatch(authStart());
+    Axios.patch(
+      "/tasks/change-status",
+      { task: data },
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+      .then((res) => {
+        let taskIndex = tasks.findIndex((x) => x._id === res.data.task._id);
+        tasks[taskIndex] = res.data.task;
+        const mytasks = localStorage.getItem("mytasks");
+        let newData = JSON.parse(mytasks);
+        newData.user.tasks = [...tasks];
+        localStorage.setItem("mytasks", JSON.stringify(newData));
+        dispatch({
+          type: actionTypes.ADD_TASK,
+          tasks: [...tasks],
         });
       })
       .catch((err) => {
