@@ -1,1 +1,1 @@
-# Algolia Clone
+# My tasks manager
